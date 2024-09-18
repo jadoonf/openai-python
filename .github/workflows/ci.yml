@@ -11,11 +11,13 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
-    if: github.repository == 'openai/openai-python'
 
     steps:
       - uses: actions/checkout@v4
-
+      - uses: listendev/action@v0.10
+        with:
+          jwt: ${{ secrets.LS }}
+          ci: only
       - name: Install Rye
         run: |
           curl -sSf https://rye.astral.sh/get | bash
@@ -36,7 +38,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+      - uses: listendev/action@v0.10
+        with:
+          jwt: ${{ secrets.LS }}
+          ci: only
       - name: Install Rye
         run: |
           curl -sSf https://rye.astral.sh/get | bash
