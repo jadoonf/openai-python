@@ -1,0 +1,51 @@
+name: CI
+true:
+  pull_request:
+    branches:
+    - main
+  push:
+    branches:
+    - main
+jobs:
+  lint:
+    if: github.repository == 'openai/openai-python'
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install listen.dev
+      uses: listendev/action@v1
+    - uses: actions/checkout@v4
+    - env:
+        RYE_INSTALL_OPTION: --yes
+        RYE_VERSION: 0.35.0
+      name: Install Rye
+      run: 'curl -sSf https://rye.astral.sh/get | bash
+
+        echo "$HOME/.rye/shims" >> $GITHUB_PATH
+
+        '
+    - name: Install dependencies
+      run: rye sync --all-features
+    - name: Run lints
+      run: ./scripts/lint
+  test:
+    if: github.repository == 'openai/openai-python'
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install listen.dev
+      uses: listendev/action@v1
+    - uses: actions/checkout@v4
+    - env:
+        RYE_INSTALL_OPTION: --yes
+        RYE_VERSION: 0.35.0
+      name: Install Rye
+      run: 'curl -sSf https://rye.astral.sh/get | bash
+
+        echo "$HOME/.rye/shims" >> $GITHUB_PATH
+
+        '
+    - name: Bootstrap
+      run: ./scripts/bootstrap
+    - name: Run tests
+      run: ./scripts/test
